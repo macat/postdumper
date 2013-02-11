@@ -11,6 +11,11 @@ def reqdata(req):
     r = []
     r.append("Formkeys: " + `req.form.items()`)
     r.append("Files:" + `req.files.items()`)
+    r.append("Headers:" + `req.headers.items()`)
+    r.append("Data:" + `req.data`)
+    r.append("Len: " + `req.content_length`)
+    r.append("Type: " + `req.content_type`)
+
     return '\n'.join(r)+ "\n\n"
 
 @app.route("/log")
