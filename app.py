@@ -6,6 +6,9 @@ import cgi
 
 app = Flask(__name__)
 
+import store
+
+redis = store.redis
 
 def reqdata(req):
     r = []
@@ -15,8 +18,15 @@ def reqdata(req):
     r.append("Data:" + `req.data`)
     r.append("Len: " + `req.content_length`)
     r.append("Type: " + `req.content_type`)
+    cont = '\n'.join(r)+ "\n\n"
+    redis.lpush("requests", cont)
+    return cont
 
-    return '\n'.join(r)+ "\n\n"
+@app.route("/rlog")
+def rlog():
+
+
+    return "<pre>" + cgi.escape("\n".join(redis.lrange("requests", 0, 200))) + "</pre>"
 
 @app.route("/log")
 def log():
