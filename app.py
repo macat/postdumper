@@ -1,6 +1,5 @@
 import os
 from flask import Flask
-
 from flask import request
 import cgi
 
@@ -18,6 +17,7 @@ def reqdata(req):
     r.append("Data:" + `req.data`)
     r.append("Len: " + `req.content_length`)
     r.append("Type: " + `req.content_type`)
+    r.append("Method: " + `req.method`)
     cont = '\n'.join(r)+ "\n\n"
     redis.lpush("requests", cont)
     return cont
@@ -32,7 +32,7 @@ def rlog():
 def log():
     return "<pre>" + cgi.escape(open("/tmp/pushlog.txt").read()) + "</pre>"
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'])
 def hello():
     print request
     open("/tmp/pushlog.txt", "a").write(reqdata(request))
